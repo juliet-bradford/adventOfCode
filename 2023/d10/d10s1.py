@@ -61,13 +61,13 @@ fasti, fastj = start[0], start[1]
 
 blackMap[fasti][fastj] = True
 
-if fasti - 1 != -1 and not blackMap[fasti-1][fastj] and pipeMap[fasti-1][fastj] in ['|', 'F', '7']:
+if not blackMap[max(fasti-1, 0)][fastj] and pipeMap[fasti-1][fastj] in ['|', 'F', '7']:
     fasti -= 1
-elif fasti + 1 != m and not blackMap[fasti+1][fastj] and pipeMap[fasti+1][fastj] in ['|', 'L', 'J']:
+elif not blackMap[min(fasti+1, m-1)][fastj] and pipeMap[fasti+1][fastj] in ['|', 'L', 'J']:
     fasti += 1
-elif fastj - 1 != -1 and not blackMap[fasti][fastj-1] and pipeMap[fasti][fastj-1] in ['-', 'F', 'L']:
+elif not blackMap[fasti][max(fastj-1)] and pipeMap[fasti][fastj-1] in ['-', 'F', 'L']:
     fastj -= 1
-elif fastj + 1 != n and not blackMap[fasti][fastj+1] and pipeMap[fasti][fastj+1] in ['-', '7', 'J']:
+elif not blackMap[fasti][min(fastj+1, n-1)] and pipeMap[fasti][fastj+1] in ['-', '7', 'J']:
     fastj += 1
 
 i = 1
