@@ -1,38 +1,33 @@
 
-def next_node(i, j, blackMap, pipeMap):
-    
-    match (pipeMap[i][j]):
+from numpy.linalg import det
 
+def next_node(i, j, blackMap, pipeMap):
+    match (pipeMap[i][j]):
             case '|':
                 if blackMap[max(i-1, 0)][j]:
                     i += 1
                 else:
                     i -= 1
-                
             case '-':
                 if blackMap[i][max(j-1, 0)]:
                     j += 1 
                 else:
                     j -= 1
-                    
             case 'L':
                 if blackMap[i][min(j+1, n-1)]:
                     i -= 1
                 else:
                     j += 1
-
             case 'J':
                 if blackMap[i][max(j-1, 0)]:
                     i -= 1
                 else: 
                     j -= 1
-
             case '7':
                 if blackMap[i][max(j-1, 0)]:
                     i += 1
                 else: 
                     j -= 1
-
             case 'F':
                 if blackMap[i][min(j+1, n-1)]:
                     i += 1 
@@ -72,14 +67,35 @@ elif not blackMap[fasti][min(fastj+1, n-1)] and pipeMap[fasti][fastj+1] in ['-',
     fastj += 1
 
 pipeLength = 1
+pipe = [start]
 while fasti != start[0] or fastj != start[1]:
 
     pipeLength += 1
     blackMap[fasti][fastj] = True
+    pipe.append([fasti, fastj])
     fasti, fastj = next_node(fasti, fastj, blackMap, pipeMap)
 
     if blackMap[fasti][fastj]:
         break
 
-print("How many steps along the loop does it take to get from the starting position to the point farthest from the starting position?")
-print(int(pipeLength/2))
+
+# Pick's Formula: A = i + b/2 - 1 -> i = A + 1 - b/2
+# for the area of a polygon with integer vertecies
+#   i = number of interior points
+#   b = number of boundry points
+
+
+# Shoelace Formula: 
+# 2A = | x1 x2 | + | x2 x3 | + ... + | xn x1 |
+#      | y1 y2 | + | y2 y3 |         | yn y1 |
+
+area = 0
+for i in range(len(pipe)):
+    area += det([pipe[i], pipe[(i+1)%len(pipe)]])
+
+area = abs(int(area/2))
+interior_points = area + 1 - int(pipeLength/2)
+
+
+print("How many tiles are enclosed by the loop?")
+print(int(interior_points))
