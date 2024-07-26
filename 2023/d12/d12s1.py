@@ -1,11 +1,6 @@
 
 from re import sub
 
-def isValid (springs, groupLengths):
-    return [len(i) for i in springs.split('.') if i != ''] == groupLengths
-    
-
-
 def numberOfArrangements (springs: str, groupLengths, currentGroupLength):
     
     if len(springs) == 0 and (len(groupLengths) != 1 or currentGroupLength != groupLengths[0]):
