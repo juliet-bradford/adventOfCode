@@ -60,10 +60,6 @@ with open(input_file, "r") as data:
 groupLengthsList = [[int(num) for num in record.split(' ')[1].strip('\n').split(',')]*5 for record in damagedRecords]
 springsList = [sub('\.\.+','.', (((record.split(' ')[0]+'?')*4)+record.split(' ')[0]).strip('.')) for record in damagedRecords]
 
-#for i in range(len(springsList)):
-#    print(groupLengthsList[i])
-#    print(springsList[i])
-
 # try some backtracking
 sumOfArrangements = 0
 numberOfSubArrangements = {}
