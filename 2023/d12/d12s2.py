@@ -2,6 +2,10 @@
 from re import sub
 
 
+# new springs are of the form (springs + '?') * 4 + springs
+# 
+# idea: make dictionary [(spring, groupLengths)] -> number of variations
+
 def numberOfArrangements (numberOfSubArrangements, springs: str, groupLengths, currentGroupLength):
     
     if (springs, tuple(groupLengths), currentGroupLength) in numberOfSubArrangements:
@@ -53,8 +57,12 @@ input_file = "input.txt"
 with open(input_file, "r") as data:
     damagedRecords = data.readlines()
 
-groupLengthsList = [[int(num) for num in record.split(' ')[1].strip('\n').split(',')] for record in damagedRecords]
-springsList = [sub('\.\.+','.', record.split(' ')[0].strip('.')) for record in damagedRecords]
+groupLengthsList = [[int(num) for num in record.split(' ')[1].strip('\n').split(',')]*5 for record in damagedRecords]
+springsList = [sub('\.\.+','.', (((record.split(' ')[0]+'?')*4)+record.split(' ')[0]).strip('.')) for record in damagedRecords]
+
+#for i in range(len(springsList)):
+#    print(groupLengthsList[i])
+#    print(springsList[i])
 
 # try some backtracking
 sumOfArrangements = 0
