@@ -11,4 +11,4 @@ for entry in entries:
         currentValue = ((currentValue + ord(letter)) * 17) % 256
     hashSum += currentValue
 
-print("Hash Sum: ", hashSum)
+print("What is the sum of the results?", hashSum)
