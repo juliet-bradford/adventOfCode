@@ -46,7 +46,8 @@ def parseInputFile(input_file):
     # go back and fill out memory for conjunction modules
     for key in modulesDict:
         for destModuleName in modulesDict[key].destModuleNames:
-            if modulesDict[destModuleName].typeName == "conjunction":
+            
+            if destModuleName in modulesDict and modulesDict[destModuleName].typeName == "conjunction":
                 modulesDict[destModuleName].memory[key] = "low"
 
     return modulesDict
@@ -59,10 +60,12 @@ def pressButton(modulesDict: dict[str, PulseModule]) -> tuple[int, int]:
 
     while not q.empty():
         moduleName, pulse, senderModuleName = q.get()
+        if moduleName not in modulesDict:
+            continue
         moduleType = modulesDict[moduleName].typeName
         match moduleType:
             case "button":
-                print("sending",pulse,"pulse from",moduleName,"to broadcaster")
+                #print("sending",pulse,"pulse from",moduleName,"to broadcaster")
                 if pulse == "low":
                     lowPulsesSent += 1
                     q.put(("broadcaster", "low", "button"))
@@ -121,16 +124,32 @@ def pressButton(modulesDict: dict[str, PulseModule]) -> tuple[int, int]:
     
     return lowPulsesSent, highPulsesSent
 
+def isBaseState(modulesDict: dict[str, PulseModule]) -> bool:
+    for module in modulesDict.values():
+        if module.typeName == "flip-flop" and module.on:
+            return False
+        if module.typeName == "conjunction" and any("high"==senderPulse for senderPulse in module.memory.values()):
+            return False
+    return True
+
 
 def main():
 
-    input_file = "d20/test1.txt"
+    input_file = "d20/input.txt"
     modulesDict: dict[str, PulseModule] = parseInputFile(input_file)
-    printModules(modulesDict)
-    print('')
-    lowPulsesSent, highPulsesSent = pressButton(modulesDict)
-    print("Low Pulses Sent:", lowPulsesSent, "\nHigh Pulses Sent:",highPulsesSent)
+    #printModules(modulesDict)
+    #print('')
 
+    # it wouldn't be hard to add a cycle checker here, but its not neccessary (sadly)
+    totalLowPulsesSent, totalHighPulsesSent = 0,0
+    for i in range(1000):
+        lowPulsesSent, highPulsesSent = pressButton(modulesDict)
+        totalLowPulsesSent += lowPulsesSent
+        totalHighPulsesSent += highPulsesSent
+        #print("Low Pulses Sent:", lowPulsesSent, "\nHigh Pulses Sent:",highPulsesSent)
+
+    print("What do you get if you multiply the total number of low pulses sent by the total number of high pulses sent?")
+    print(totalLowPulsesSent * totalHighPulsesSent)
 
 if __name__ == "__main__":
     main()
